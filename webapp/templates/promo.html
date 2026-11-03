@@ -1,0 +1,25 @@
+{% extends 'base.html' %}{% block title %}{{ p.id }}{% endblock %}{% block body %}
+<p><a href="{{ url_for('ringkasan', bulan=key) }}">&larr; Ringkasan {{ key }}</a></p>
+<h1>{{ p.id }} &middot; {{ p.nama }}</h1>
+<p class="sub">{{ p.tipe }} &middot; periode {{ p.start|tgl or 'sejak awal' }} &ndash; {{ p.end|tgl or 'berlaku terus' }} &middot; {{ p.hari }} hari promo di {{ key }}</p>
+{% set v=p.verdict %}<div class="kpis">
+<div class="kpi"><b><span class="badge {{ 'b-bad' if v.startswith('TIDAK') else 'b-ok' if v.startswith('EFEKTIF') else 'b-mid' if v.startswith('CUKUP') else 'b-grey' }}">{{ v }}</span></b><span>kesimpulan</span></div>
+<div class="kpi"><b>{{ p.jual }} / {{ p.berlaku }}</b><span>outlet jual / berlaku</span></div>
+<div class="kpi"><b>{{ p.up_item|pct if p.up_item is not none else 'n/a' }}</b><span>uplift qty item</span></div>
+<div class="kpi"><b>{{ p.up_outlet|pct if p.up_outlet is not none else 'n/a' }}</b><span>uplift sales total outlet</span></div>
+<div class="kpi"><b>{{ p.kontrib|pct }}</b><span>kontribusi ke sales outlet</span></div>
+<div class="kpi"><b>{{ p.adopsi|pct if p.adopsi is not none else 'n/a' }}</b><span>adopsi button promo</span></div>
+<div class="kpi"><b>{{ p.sales|rp }}</b><span>sales item (Rp)</span></div><div class="kpi"><b>{{ p.biaya|rp }}</b><span>biaya diskon est. (Rp)</span></div></div>
+{% if p.catatan %}<div class="flash ok">{{ p.catatan }}</div>{% endif %}
+<h2>Tren harian (semua outlet)</h2><div class="card">{{ charts.daily(d.trend.days, d.trend.qp, d.trend.qn, d.trend.total, d.trend.flag) }}</div>
+<h2>A. Per menu</h2><div class="wrap"><table><tr><th>Menu</th><th>Harga normal</th><th>Harga promo</th><th>Diskon</th><th>GM% normal</th><th>GM% promo</th><th>Outlet jual</th><th>Qty button promo</th><th>Sales button promo</th><th>Qty button normal</th><th>Adopsi</th><th>Sales item</th><th>Uplift qty</th><th>Uplift sales</th><th>Scope</th></tr>
+{% for m in d.menu %}<tr><td>{{ m.menu }}</td><td class="n">{{ m.hn|rp }}</td><td class="n">{{ m.hp|rp }}</td><td class="n">{{ m.disc|pct(0) }}</td><td class="n">{{ m.gm_norm|pct if m.gm_norm is not none else '-' }}</td><td class="n">{{ m.gm_promo|pct if m.gm_promo is not none else '-' }}</td>
+<td class="c">{{ m.jual }}</td><td class="n">{{ m.qp|rp }}</td><td class="n">{{ m.sp|rp }}</td><td class="n">{{ m.qn|rp }}</td><td class="n">{{ m.adopsi|pct if m.adopsi is not none else 'n/a' }}</td><td class="n">{{ m.sales|rp }}</td>
+<td class="n">{{ m.up_q|pct if m.up_q is not none else 'n/a' }}</td><td class="n">{{ m.up_s|pct if m.up_s is not none else 'n/a' }}</td><td class="small">{{ m.scope }}</td></tr>{% endfor %}</table></div>
+<h2>B. Per tipe outlet</h2><div class="wrap"><table><tr><th>Tipe</th><th>Outlet jual</th><th>Outlet berlaku</th><th>Qty item</th><th>Sales item</th><th>Sales button promo</th><th>Kontribusi</th><th>Uplift sales item</th><th>Uplift total outlet</th></tr>
+{% for t in d.tipe %}<tr><td>{{ t.tipe }}</td><td class="c">{{ t.jual }}</td><td class="c">{{ t.berlaku }}</td><td class="n">{{ t.qty|rp }}</td><td class="n">{{ t.sales|rp }}</td><td class="n">{{ t.sales_btn|rp }}</td><td class="n">{{ t.kontrib|pct }}</td><td class="n">{{ t.up_s|pct if t.up_s is not none else 'n/a' }}</td><td class="n">{{ t.up_t|pct if t.up_t is not none else 'n/a' }}</td></tr>{% endfor %}</table></div>
+<h2>C. Per outlet (urut sales item terbesar)</h2><div class="wrap"><table><tr><th>#</th><th>Outlet</th><th>Tipe</th><th>Pavelle</th><th>Hari promo</th><th>Qty item</th><th>Sales item</th><th>Sales button promo</th><th>Adopsi</th><th>Kontribusi</th><th>Uplift sales item</th><th>Uplift total outlet</th><th>Status</th><th>Harga janggal</th></tr>
+{% for a in d.outlets %}<tr><td class="c">{{ loop.index }}</td><td>{{ a.outlet }}</td><td class="c">{{ a.tipe }}</td><td class="c">{{ a.pavelle }}</td><td class="c">{{ a.nP }}</td><td class="n">{{ a.qf|rp }}</td><td class="n">{{ a.sf|rp }}</td><td class="n">{{ a.sp|rp }}</td>
+<td class="n">{{ a.adopsi|pct if a.adopsi is not none else 'n/a' }}</td><td class="n">{{ a.kontrib|pct }}</td><td class="n">{{ a.upS|pct if a.upS is not none else 'n/a' }}</td><td class="n">{{ a.upT|pct if a.upT is not none else 'n/a' }}</td>
+<td class="c"><span class="badge {{ 'b-ok' if a.status=='JALAN' else 'b-bad' if a.status=='BELUM JALAN' else 'b-grey' }}">{{ a.status }}</span></td><td class="c">{{ a.cek or '' }}</td></tr>{% endfor %}</table></div>
+{% endblock %}

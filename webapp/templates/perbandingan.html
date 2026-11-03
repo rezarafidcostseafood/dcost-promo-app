@@ -1,0 +1,10 @@
+{% extends 'base.html' %}{% block title %}Perbandingan{% endblock %}{% block body %}
+<h1>Perbandingan promo antar bulan</h1>
+<p class="sub">Total seluruh outlet, seluruh bulan. Untuk promo yang jalan sebagian bulan, bandingkan lewat <b>sales per hari promo</b>. Bulan tanpa data atau promo tidak aktif dikosongkan. Kontribusi = sales promo / total sales dine-in semua outlet.</p>
+<form method="get" class="row"><div><label>Mulai bulan</label><select name="mulai">{% for m in ms %}<option value="{{ m.month }}" {{ 'selected' if m.month==base }}>{{ m.month }}</option>{% endfor %}</select></div>
+<div><label>Tampilkan</label><select name="metrik">{% for k,l in [('perhari','Sales per hari promo (Rp)'),('sales','Sales promo total (Rp)'),('kontrib','Kontribusi ke sales outlet'),('qty','Qty promo'),('adopsi','Adopsi button promo'),('hari','Hari promo'),('mom','Perubahan sales/hari vs bulan sebelumnya')] %}<option value="{{ k }}" {{ 'selected' if k==metric }}>{{ l }}</option>{% endfor %}</select></div>
+<div><label>Promo untuk grafik</label><select name="promo">{% for r in rows %}<option value="{{ r.id }}" {{ 'selected' if sel and r.id==sel.id }}>{{ r.id }} {{ r.nama }}</option>{% endfor %}</select></div><div><button class="btn">Tampilkan</button></div></form>
+{% if sel %}<h2>{{ sel.id }} &middot; {{ sel.nama }}</h2><div class="card">{{ charts.monthly(months|map('string')|list|slice_labels, sel.m|map(attribute='perhari')|list, sel.m|map(attribute='kontrib')|list) }}</div>{% endif %}
+<div class="wrap"><table><tr><th>ID</th><th>Promo</th>{% for mo in months %}<th>{{ mo.strftime('%b %y') }}</th>{% endfor %}</tr>
+{% for r in rows %}<tr><td class="c">{{ r.id }}</td><td>{{ r.nama }}</td>{% for c in r.m %}{% set v=c[metric] %}<td class="n {{ ('pos' if v and v>0 else 'neg') if metric=='mom' and v is not none }}">
+{% if v is none %}{% elif metric in ('kontrib','adopsi','mom') %}{{ v|pct }}{% elif metric=='hari' %}{{ v }}{% else %}{{ v|rp }}{% endif %}</td>{% endfor %}</tr>{% endfor %}</table></div>{% endblock %}

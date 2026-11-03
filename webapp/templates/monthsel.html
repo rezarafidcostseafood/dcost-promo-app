@@ -1,0 +1,2 @@
+<form method="get" class="row" style="margin:8px 0"><div><label>Bulan data</label><select name="bulan" onchange="this.form.submit()">
+{% for m in ms|reverse %}<option value="{{ m.month }}" {{ 'selected' if m.month==key }}>{{ m.month }}</option>{% endfor %}</select></div></form>

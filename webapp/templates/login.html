@@ -1,0 +1,7 @@
+{% extends 'base.html' %}{% block title %}Masuk{% endblock %}{% block body %}
+<div class="login card"><h1>Analisa Promo D'Cost</h1><p class="sub">Masuk dengan email yang didaftarkan admin.</p>
+<form method="post"><input type="hidden" name="csrf" value="{{ csrf }}">
+<label>Email</label><input type="email" name="email" required autofocus style="width:100%">
+<label>Kata sandi</label><input type="password" name="password" required style="width:100%">
+<p><button class="btn" style="width:100%">Masuk</button></p></form>
+<p class="small muted">Belum punya akses atau lupa kata sandi? Hubungi admin untuk didaftarkan / direset.</p></div>{% endblock %}

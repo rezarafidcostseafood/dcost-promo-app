@@ -1,0 +1,9 @@
+{% extends 'base.html' %}{% block title %}Data RM{% endblock %}{% block body %}
+<h1>Data RM</h1><p class="sub">Unggah file RM bulanan apa adanya (.xlsx dari tim data center). Pilih bulannya di sini, jadi tidak perlu ada kolom bulan di file. Mengunggah bulan yang sama akan menimpa data lama.</p>
+<div class="card"><form method="post" enctype="multipart/form-data" class="row"><input type="hidden" name="csrf" value="{{ csrf }}">
+<div><label>Bulan data</label><input type="month" name="bulan" required></div><div><label>File RM (.xlsx)</label><input type="file" name="file" accept=".xlsx" required></div><div><button class="btn">Unggah &amp; proses</button></div></form>
+<p class="small muted">Sistem memakai floor "{{ st.floor }}" (ubah di Pengaturan). Format kolom Kelompok yang tertukar (A/B) dan bulan 28-31 hari dikenali otomatis. Proses 1-3 menit untuk file penuh.</p></div>
+<h2>Bulan yang tersimpan</h2><div class="wrap"><table><tr><th>Bulan</th><th>File</th><th>Baris</th><th>Hari</th><th>Diunggah oleh</th><th>Waktu</th><th></th></tr>
+{% for m in ms|reverse %}<tr><td class="c"><b>{{ m.month }}</b></td><td>{{ m.filename }}</td><td class="n">{{ m.nrows|rp }}</td><td class="c">{{ m.days }}</td><td>{{ m.uploaded_by }}</td><td>{{ m.uploaded_at }}</td>
+<td class="c"><form method="post" action="{{ url_for('data_hapus') }}" class="inline" onsubmit="return confirm('Hapus data bulan {{ m.month }}?')"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="bulan" value="{{ m.month }}"><button class="btn red sm">Hapus</button></form></td></tr>
+{% else %}<tr><td colspan="7" class="c muted">Belum ada data.</td></tr>{% endfor %}</table></div>{% endblock %}

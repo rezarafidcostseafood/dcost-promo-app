@@ -1,0 +1,9 @@
+{% extends 'base.html' %}{% block title %}Master COGS{% endblock %}{% block body %}
+<h1>Master COGS</h1><p class="sub">COGS per porsi dine-in, sebelum PB1. Dicari lewat Kode Menu. Menu paket (MBG, Yum Deal) dihitung dari komponennya. Untuk promo, sistem memakai COGS kode normal; bila tidak ada, kode promo.</p>
+{% include 'master_nav.html' %}
+<form method="get" class="row"><div><input name="q" value="{{ q }}" placeholder="cari kode / nama"></div><div><button class="btn sm">Cari</button></div><div class="muted small">{{ rows|length }} ditampilkan dari {{ total }}</div></form>
+{% if me.role in ('editor','admin') %}<form method="post" class="card row" style="margin-top:8px"><input type="hidden" name="csrf" value="{{ csrf }}"><div><label>Kode menu</label><input name="code" required></div><div><label>Nama</label><input name="nama" style="width:260px"></div>
+<div><label>COGS per porsi</label><input name="cogs" required></div><div><label>Sumber/catatan</label><input name="sumber" value="Manual"></div><div><button class="btn sm">Tambah / perbarui</button></div></form>{% endif %}
+<div class="wrap"><table><tr><th>Kode</th><th>Nama</th><th>COGS / porsi</th><th>Harga existing (incl PB1)</th><th>GM% file</th><th>Sumber</th><th></th></tr>
+{% for r in rows %}<tr><td>{{ r.code }}</td><td>{{ r.nama }}</td><td class="n">{{ r.cogs|rp }}</td><td class="n">{{ r.harga|rp if r.harga else '' }}</td><td class="n">{{ r.gm|pct if r.gm else '' }}</td><td class="small">{{ r.sumber }}</td>
+<td class="c">{% if me.role in ('editor','admin') %}<form method="post" class="inline" onsubmit="return confirm('Hapus?')"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="code" value="{{ r.code }}"><button class="btn red sm" name="act" value="hapus">Hapus</button></form>{% endif %}</td></tr>{% endfor %}</table></div>{% endblock %}

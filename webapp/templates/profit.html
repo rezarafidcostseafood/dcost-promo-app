@@ -1,0 +1,9 @@
+{% extends 'base.html' %}{% block title %}Profit{% endblock %}{% block body %}
+<h1>Margin (GM%) &amp; break-even promo &mdash; {{ key }}</h1>
+<p class="sub">GM% = (sales &minus; COGS) / sales. <b>Break-even</b> = kenaikan qty yang dibutuhkan agar gross profit setelah diskon sama dengan gross profit tanpa diskon. Hanya menu yang COGS-nya ada di Master &gt; COGS yang dihitung (lihat Cakupan).
+Gross profit belum memperhitungkan biaya lain (tenaga kerja, sewa) maupun efek ke menu lain.</p>{% include 'monthsel.html' %}
+<div class="wrap"><table><tr><th>ID</th><th>Promo</th><th>Sales item</th><th>Cakupan<br>COGS</th><th>COGS</th><th>Gross profit</th><th>GM%<br>promo</th><th>Biaya diskon</th><th>GM% bila<br>harga normal</th><th>Break-even<br>kenaikan qty</th><th>Uplift qty<br>aktual</th><th>Kesimpulan margin</th><th>Catatan</th></tr>
+{% for p in promos %}{% set f=p.profit %}<tr><td class="c"><a href="{{ url_for('promo', pid=p.id, bulan=key) }}">{{ p.id }}</a></td><td>{{ p.nama }}</td><td class="n">{{ f.sales|rp }}</td><td class="n">{{ f.cakupan|pct(0) if f.cakupan is not none else 'n/a' }}</td>
+<td class="n">{{ f.cogs|rp }}</td><td class="n {{ 'neg' if f.gp is not none and f.gp<0 }}">{{ f.gp|rp if f.gp is not none else 'n/a' }}</td><td class="n">{{ f.gm|pct if f.gm is not none else 'n/a' }}</td><td class="n">{{ f.biaya|rp }}</td>
+<td class="n">{{ f.gm_norm|pct if f.gm_norm is not none else 'n/a' }}</td><td class="n">{{ f.be|pct(0) if f.be is not none else 'n/a' }}</td><td class="n">{{ p.up_item|pct if p.up_item is not none else 'n/a' }}</td>
+<td><span class="badge {{ 'b-ok' if f.kes.startswith('IMPAS') else 'b-bad' if f.kes.startswith('GP') else 'b-mid' if f.kes.startswith('BUTUH') else 'b-grey' }}">{{ f.kes }}</span></td><td class="small">{{ f.catatan }}</td></tr>{% endfor %}</table></div>{% endblock %}

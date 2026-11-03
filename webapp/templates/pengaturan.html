@@ -1,0 +1,7 @@
+{% extends 'base.html' %}{% block title %}Pengaturan{% endblock %}{% block body %}<h1>Pengaturan</h1>
+<form method="post" class="card" style="max-width:640px"><input type="hidden" name="csrf" value="{{ csrf }}">
+<label>Nama floor dine-in di data RM (kolom Florr)</label><input name="floor" value="{{ st.floor }}"><label>Label kelompok menu tunggal</label><input name="src_single" value="{{ st.src_single }}"><label>Label kelompok menu paket</label><input name="src_group" value="{{ st.src_group }}">
+<label>Ambang EFEKTIF (uplift sales total outlet, %)</label><input name="ambang_naik" value="{{ (st.ambang_naik*100)|round(2) }}"><label>Ambang TIDAK EFEKTIF (%, di bawah ini = tidak efektif)</label><input name="ambang_turun" value="{{ (st.ambang_turun*100)|round(2) }}">
+<label>Toleransi selisih harga button vs master (%)</label><input name="toleransi" value="{{ (st.toleransi_harga*100)|round(2) }}">
+<label>Hari libur nasional / cuti bersama (1 baris: YYYY-MM-DD keterangan). Sabtu-Minggu otomatis libur.</label><textarea name="holidays" rows="9">{{ hol }}</textarea>
+<p class="small muted">Mengubah pengaturan memicu hitung ulang otomatis. Mengganti nama floor memengaruhi semua bulan; bila floor baru belum ada di file lama, unggah ulang bulan tersebut.</p><p><button class="btn">Simpan</button></p></form>{% endblock %}

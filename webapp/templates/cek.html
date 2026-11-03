@@ -1,0 +1,5 @@
+{% extends 'base.html' %}{% block title %}Cek Data{% endblock %}{% block body %}
+<h1>Cek data &mdash; {{ key }}</h1><p class="sub">Semua baris sebaiknya OK sebelum hasil dipercaya. Biru = informasi saja.</p>{% include 'monthsel.html' %}
+<div class="wrap"><table><tr><th>Pemeriksaan</th><th>Nilai</th><th>Status</th><th>Arti / tindakan</th></tr>
+{% for i in items %}<tr><td>{{ i.label }}</td><td class="c">{{ i.value }}</td><td class="c"><span class="badge {{ 'b-ok' if i.status=='OK' else 'b-bad' if i.status=='PERIKSA' else 'b-info' }}">{{ i.status }}</span></td>
+<td>{{ i.note }}{% if i.daftar %}<details><summary>Lihat daftar ({{ i.daftar|length }})</summary><ul class="small">{% for x in i.daftar %}<li>{{ x }}</li>{% endfor %}</ul></details>{% endif %}</td></tr>{% endfor %}</table></div>{% endblock %}

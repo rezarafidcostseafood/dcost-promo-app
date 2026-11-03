@@ -1,0 +1,22 @@
+{% extends 'base.html' %}{% block title %}Ringkasan{% endblock %}{% block body %}
+<h1>Ringkasan efektivitas promo &mdash; {{ key }}</h1>
+<p class="sub">Uplift dihitung <b>like-for-like</b>: hari promo dibanding hari non-promo bertipe sama (hari kerja vs weekend/libur) di outlet yang sama. Kesimpulan dinilai dari uplift sales <b>total outlet</b> (dampak bersih, sudah memperhitungkan kanibalisasi).
+Ambang: efektif &ge; {{ st.ambang_naik|pct(0) }}, tidak efektif &lt; {{ st.ambang_turun|pct(0) }}. Angka sebelum PB1, floor {{ st.floor }}.</p>
+{% include 'monthsel.html' %}
+{% for w in warn %}<div class="flash err">Cek data: <b>{{ w.label }}</b> ({{ w.value }}). <a href="{{ url_for('cek', bulan=key) }}">Lihat detail</a></div>{% endfor %}
+<div class="kpis"><div class="kpi"><b>{{ promos|length }}</b><span>promo aktif bulan ini</span></div>
+{% for k,v in cnt.items() %}<div class="kpi"><b>{{ v }}</b><span>{{ k|lower }}</span></div>{% endfor %}</div>
+<p><a class="btn sec sm" href="{{ url_for('export_hasil', bulan=key) }}">Unduh Excel (ringkasan, profit, per outlet)</a></p>
+<div class="wrap"><table><tr><th>ID</th><th>Promo</th><th>Hari<br>promo</th><th>Outlet<br>jual/berlaku</th><th>Qty item</th><th>Sales item (Rp)</th><th>Adopsi<br>button</th><th>Kontribusi<br>sales outlet</th>
+<th>Uplift qty<br>item</th><th>Uplift sales<br>total outlet</th><th>Sales inkremental<br>outlet (Rp)</th><th>Biaya diskon<br>est. (Rp)</th><th>Kesimpulan</th><th>Catatan</th></tr>
+{% for p in promos %}{% set v=p.verdict %}<tr><td class="c"><a href="{{ url_for('promo', pid=p.id, bulan=key) }}"><b>{{ p.id }}</b></a></td><td><a href="{{ url_for('promo', pid=p.id, bulan=key) }}">{{ p.nama }}</a></td>
+<td class="c">{{ p.hari }}</td><td class="c">{{ p.jual }}/{{ p.berlaku }}</td><td class="n">{{ p.qty|rp }}</td><td class="n">{{ p.sales|rp }}</td>
+<td class="n">{{ p.adopsi|pct if p.adopsi is not none else 'n/a' }}</td><td class="n">{{ p.kontrib|pct }}</td>
+<td class="n {{ 'pos' if p.up_item and p.up_item>0 else 'neg' if p.up_item is not none }}">{{ p.up_item|pct if p.up_item is not none else 'n/a' }}</td>
+<td class="n {{ 'pos' if p.up_outlet and p.up_outlet>0 else 'neg' if p.up_outlet is not none }}">{{ p.up_outlet|pct if p.up_outlet is not none else 'n/a' }}</td>
+<td class="n">{{ p.incr|rp if p.incr is not none else 'n/a' }}</td><td class="n">{{ p.biaya|rp }}</td>
+<td class="c"><span class="badge {{ 'b-bad' if v.startswith('TIDAK') else 'b-ok' if v.startswith('EFEKTIF') else 'b-mid' if v.startswith('CUKUP') else 'b-grey' }}">{{ v }}</span></td><td class="small">{{ p.catatan }}</td></tr>{% endfor %}</table></div>
+<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(440px,1fr));margin-top:14px">
+<div class="card"><h2 style="margin-top:0">Sales item per promo (Rp)</h2>{{ charts.hbar(chart_sales) }}</div>
+<div class="card"><h2 style="margin-top:0">Kontribusi ke sales dine-in outlet</h2>{{ charts.hbar(chart_kontrib, fmt=kfmt) }}</div></div>
+{% endblock %}

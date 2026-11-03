@@ -1,0 +1,18 @@
+{% extends 'base.html' %}{% block title %}Ubah baris promo{% endblock %}{% block body %}
+<p><a href="{{ url_for('master_promo') }}">&larr; Master promo</a></p><h1>{{ 'Ubah' if lid else 'Tambah' }} baris promo</h1>
+{% set r = r or {} %}<form method="post" class="card"><input type="hidden" name="csrf" value="{{ csrf }}">{% if lid %}<input type="hidden" name="lid" value="{{ lid }}">{% endif %}
+<div class="grid"><div><label>ID Promo *</label><input name="id" value="{{ r.id or '' }}" required style="width:100%"></div><div><label>Nama Promo</label><input name="nama" value="{{ r.nama or '' }}" style="width:100%"></div>
+<div><label>Tipe Promo</label><input name="tipe" value="{{ r.tipe or '' }}" style="width:100%"></div><div><label>Nama Menu *</label><input name="menu" value="{{ r.menu or '' }}" required style="width:100%"></div>
+<div><label>Status menu</label><select name="status" style="width:100%">{% for x in ('Existing','New') %}<option {{ 'selected' if r.status==x }}>{{ x }}</option>{% endfor %}</select></div>
+<div><label>Sumber data (menu tunggal=UNGROUP, paket=GROUP)</label><select name="src" style="width:100%">{% for x in ('UNGROUP','GROUP') %}<option {{ 'selected' if r.src==x }}>{{ x }}</option>{% endfor %}</select></div>
+<div><label>Kode normal reguler</label><input name="kode_normal_reg" value="{{ r.kode_normal_reg or '' }}" style="width:100%"></div><div><label>Kode normal Xpress</label><input name="kode_normal_xp" value="{{ r.kode_normal_xp or '' }}" style="width:100%"></div>
+<div><label>Kode promo reguler</label><input name="kode_promo_reg" value="{{ r.kode_promo_reg or '' }}" style="width:100%"></div><div><label>Kode promo Xpress / kode ke-2</label><input name="kode_promo_xp" value="{{ r.kode_promo_xp or '' }}" style="width:100%"></div>
+<div><label>Harga normal (sebelum PB1)</label><input name="hn" value="{{ r.hn if r.hn is not none else '' }}" style="width:100%"></div>
+<div><label>Diskon % (mis. 30)</label><input name="disc" value="{{ (r.disc*100)|round(2) if r.disc is defined and r.disc is not none else '' }}" style="width:100%"></div>
+<div><label>Harga promo (isi bila bukan %)</label><input name="hp" value="{{ r.hp if r.hp is not none else '' }}" style="width:100%"></div>
+<div><label>Sales di RM sudah diskon?</label><select name="rm_diskon" style="width:100%">{% for x in ('SUDAH DISKON','HARGA NORMAL') %}<option {{ 'selected' if r.rm_diskon==x }}>{{ x }}</option>{% endfor %}</select></div>
+<div><label>Mulai (kosong = sejak awal)</label><input type="date" name="start" value="{{ r.start or '' }}" style="width:100%"></div><div><label>Selesai (kosong = berlaku terus)</label><input type="date" name="end" value="{{ r.end or '' }}" style="width:100%"></div>
+<div><label>Outlet berlaku (ALL / REGULER / XPRESS / AYUMMY / NONXPRESS / PAVELLE / nama;nama)</label><input name="scope" value="{{ r.scope or 'ALL' }}" style="width:100%"></div>
+<div><label>Baseline mulai (opsional)</label><input type="date" name="base_start" value="{{ r.base_start or '' }}" style="width:100%"></div><div><label>Baseline selesai (opsional)</label><input type="date" name="base_end" value="{{ r.base_end or '' }}" style="width:100%"></div>
+<div><label>Tanggal promo TIDAK berlaku (opsional)</label><input type="date" name="ex_date" value="{{ r.ex_date or '' }}" style="width:100%"></div></div>
+<label>Catatan</label><textarea name="note" rows="3">{{ r.note or '' }}</textarea><p><button class="btn">Simpan</button></p></form>{% endblock %}

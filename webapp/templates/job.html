@@ -1,0 +1,3 @@
+{% extends 'base.html' %}{% block body %}<div class="card"><h1>Memproses data RM</h1><p id="msg">{{ j.msg }}</p><p id="act">{% if j.status=='run' %}Mohon tunggu, halaman ini diperbarui otomatis...{% endif %}</p>
+<p><a class="btn sec" href="{{ url_for('data') }}">Kembali ke Data RM</a> <a class="btn" href="{{ url_for('ringkasan') }}">Lihat Ringkasan</a></p></div>
+{% if j.status=='run' %}<script>(function t(){fetch("{{ url_for('job_status', jid=jid) }}").then(r=>r.json()).then(j=>{document.getElementById('msg').textContent=j.msg;if(j.status=='run'){setTimeout(t,2500)}else{document.getElementById('act').textContent=j.status=='ok'?'Selesai.':'Terjadi kesalahan.'}})})();</script>{% endif %}{% endblock %}

@@ -1,0 +1,8 @@
+<div class="row" style="margin:6px 0 12px"><a class="btn {{ '' if request.endpoint.startswith('master_promo') else 'sec' }} sm" href="{{ url_for('master_promo') }}">Promo</a>
+<a class="btn {{ '' if request.endpoint=='master_outlet' else 'sec' }} sm" href="{{ url_for('master_outlet') }}">Outlet</a><a class="btn {{ '' if request.endpoint=='master_cogs' else 'sec' }} sm" href="{{ url_for('master_cogs') }}">COGS</a>
+<a class="btn sec sm" href="{{ url_for('master_export') }}">Unduh master (Excel)</a></div>
+{% if me.role in ('editor','admin') %}<details><summary>Impor dari Excel (template / hasil unduhan)</summary><form method="post" action="{{ url_for('master_import') }}" enctype="multipart/form-data" class="card row">
+<input type="hidden" name="csrf" value="{{ csrf }}"><div><input type="file" name="file" accept=".xlsx" required></div>
+<div><label><input type="checkbox" name="apa" value="promo" checked> Master promo</label><label><input type="checkbox" name="apa" value="outlet" checked> Outlet</label>
+<label><input type="checkbox" name="apa" value="cogs" checked> COGS</label><label><input type="checkbox" name="apa" value="setting" checked> Pengaturan &amp; hari libur</label></div>
+<div><button class="btn" onclick="return confirm('Data yang dipilih akan DIGANTI seluruhnya oleh isi file. Lanjutkan?')">Impor</button></div></form></details>{% endif %}
